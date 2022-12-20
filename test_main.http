@@ -1,0 +1,44 @@
+POST http://127.0.0.1:8000/users
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "jeffstubler"
+}
+
+###
+
+GET http://127.0.0.1:8000/user/5716/loans
+Accept: application/json
+
+###
+
+POST http://127.0.0.1:8000/user/5716/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "amount": "50000.00",
+  "term_months": 120,
+  "interest_rate": "0.36"
+}
+
+###
+
+GET http://127.0.0.1:8000/user/5716/loan/4032/schedule
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/user/5716/loan/4032/month/27
+Accept: application/json
+
+###
+
+POST http://127.0.0.1:8000/user/5716/loan/4032/authorized_users
+Accept: application/json
+Content-Type: application/json
+
+{
+  "user_id": 6231
+}
