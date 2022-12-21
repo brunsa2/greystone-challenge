@@ -1,9 +1,14 @@
 """API handler for loan service"""
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response, HTTPException
 from pydantic import BaseModel
+from repositories.user_repository import UserRepository
+from request_exception import RequestException
+from services.create_user_service import CreateUserService
 
 app = FastAPI()
+
+user_repository = UserRepository()
 
 
 class UserRequest(BaseModel):
@@ -20,9 +25,14 @@ class LoanRequest(BaseModel):
 
 @app.post("/users")
 async def create_user(user: UserRequest):
-    """Handles creating new user"""
+    """Handles creating new user
+
+    @:param user: User creation request
+    @:returns: JSON response with new user ID
+    """
+    user_id = CreateUserService.create_user(user_repository, user.username)
     return {
-        "user_id": 0
+        "user_id": user_id
     }
 
 
@@ -71,3 +81,9 @@ async def get_loan_month(user_id: int, loan_id: int, month_id: int):
 async def add_loan_authorized_user(user_id: int, loan_id: int):
     """Handles adding authorized (shared) user to a given loan"""
     return {}
+
+
+@app.exception_handler(RequestException)
+async def request_exception_handler(request: Request, e: RequestException):
+    """Handles request exceptions"""
+    return Response(status_code=400, content="Invalid request: {}".format(e))
