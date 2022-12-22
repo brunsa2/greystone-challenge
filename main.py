@@ -1,14 +1,19 @@
 """API handler for loan service"""
 
-from fastapi import FastAPI, Request, Response, HTTPException
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
 from repositories.user_repository import UserRepository
+from repositories.loan_repository import LoanRepository
 from request_exception import RequestException
-from services.create_user_service import CreateUserService
+from services import CreateUserService, CreateLoanService
+from decimal import Decimal, InvalidOperation
 
 app = FastAPI()
 
 user_repository = UserRepository()
+loan_repository = LoanRepository()
 
 
 class UserRequest(BaseModel):
@@ -49,9 +54,31 @@ async def get_user_loans(user_id: int):
 
 @app.post("/user/{user_id}/loans")
 async def create_loan(user_id: int, loan: LoanRequest):
-    """Handles creating new loan for given user"""
+    """Handles creating new loan for given user
+
+    @:param user_id: User ID to create loan for
+    @:param loan: Loan parameters to issue loan with
+    @:returns: JSON response with new loan ID
+    """
+    try:
+        amount = Decimal(loan.amount)
+    except InvalidOperation as e:
+        raise RequestException("Invalid amount")
+
+    try:
+        interest_rate = Decimal(loan.interest_rate)
+    except InvalidOperation as e:
+        raise RequestException("Invalid interest rate")
+
+    loan_id = CreateLoanService.create_loan(
+        loan_repository,
+        user_repository,
+        user_id=user_id,
+        amount=amount,
+        term_months=loan.term_months,
+        interest_rate=interest_rate)
     return {
-        "loan_id": 0
+        "loan_id": loan_id
     }
 
 
@@ -85,5 +112,21 @@ async def add_loan_authorized_user(user_id: int, loan_id: int):
 
 @app.exception_handler(RequestException)
 async def request_exception_handler(request: Request, e: RequestException):
-    """Handles request exceptions"""
-    return Response(status_code=400, content="Invalid request: {}".format(e))
+    """Handles request exceptions
+
+    @:param request: Request
+    @:param e: Exception thrown
+    @:returns: Error response
+    """
+    return PlainTextResponse("Invalid request: {}".format(e), status_code=422)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, e: RequestValidationError):
+    """Handles validation exceptions
+
+    @:param request: Request
+    @:param e: Exception thrown
+    @:returns: Error response
+    """
+    return PlainTextResponse("Invalid request: {}".format(e), status_code=400)

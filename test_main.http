@@ -21,7 +21,19 @@ Content-Type: application/json
 GET http://127.0.0.1:8000/user/5716/loans
 Accept: application/json
 
-###
+### Happy path loan creation
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "amount": "50000.00",
+  "term_months": 120,
+  "interest_rate": "0.36"
+}
+
+### Bad user ID
 
 POST http://127.0.0.1:8000/user/5716/loans
 Accept: application/json
@@ -31,6 +43,157 @@ Content-Type: application/json
   "amount": "50000.00",
   "term_months": 120,
   "interest_rate": "0.36"
+}
+
+### Bad amount
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "amount": "ijlds",
+  "term_months": 120,
+  "interest_rate": "0.36"
+}
+
+### Missing amount string
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "amount": "",
+  "term_months": 120,
+  "interest_rate": "0.36"
+}
+
+### Bad term
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "amount": "50000.00",
+  "term_months": "ghb",
+  "interest_rate": "0.36"
+}
+
+### Bad interest rate
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "amount": "50000.00",
+  "term_months": 120,
+  "interest_rate": "ffgsdgf"
+}
+
+### Missing interest rate string
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "amount": "50000.00",
+  "term_months": 120,
+  "interest_rate": ""
+}
+
+### Missing field
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "term_months": 120,
+  "interest_rate": "0.36"
+}
+
+### Non-JSON request
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+Something not JSON
+
+### Negative amount
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "amount": "-50000.00",
+  "term_months": 120,
+  "interest_rate": "0.36"
+}
+
+### Too large amount
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "amount": "500000.00",
+  "term_months": 120,
+  "interest_rate": "0.36"
+}
+
+### Negative term
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "amount": "50000.00",
+  "term_months": -120,
+  "interest_rate": "0.36"
+}
+
+### Too long term
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "amount": "50000.00",
+  "term_months": 144,
+  "interest_rate": "0.36"
+}
+
+### Too small interest rate
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "amount": "50000.00",
+  "term_months": 120,
+  "interest_rate": "0.04"
+}
+
+### Too large interest rate
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "amount": "50000.00",
+  "term_months": 120,
+  "interest_rate": "0.40"
 }
 
 ###

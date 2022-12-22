@@ -26,3 +26,9 @@ class UserRepository:
         @:returns: User object
         """
         return self.users.get(user_id)
+
+    def exists(self, user_id: int):
+        """Check if user exists in the repository.
+        @:param user_ud: ID of user to check
+        @:returns: True if user of that ID exists; false otherwise"""
+        return user_id in self.users.keys()
