@@ -6,6 +6,16 @@ Content-Type: application/json
   "username": "jeffstubler"
 }
 
+### Second user for testing authorized users
+
+POST http://127.0.0.1:8000/users
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "jeffstubler1"
+}
+
 ###
 
 POST http://127.0.0.1:8000/users
@@ -196,6 +206,36 @@ Content-Type: application/json
   "interest_rate": "0.40"
 }
 
+### Happy path adding authorized user
+
+POST http://127.0.0.1:8000/user/1/loan/1/authorized_users
+Accept: application/json
+Content-Type: application/json
+
+{
+  "user_id": 2
+}
+
+### Bad loan ID
+
+POST http://127.0.0.1:8000/user/1/loan/5716/authorized_users
+Accept: application/json
+Content-Type: application/json
+
+{
+  "user_id": 2
+}
+
+### Bad authorized user ID
+
+POST http://127.0.0.1:8000/user/1/loan/1/authorized_users
+Accept: application/json
+Content-Type: application/json
+
+{
+  "user_id": 4032
+}
+
 ###
 
 GET http://127.0.0.1:8000/user/5716/loan/4032/schedule
@@ -205,13 +245,3 @@ Accept: application/json
 
 GET http://127.0.0.1:8000/user/5716/loan/4032/month/27
 Accept: application/json
-
-###
-
-POST http://127.0.0.1:8000/user/5716/loan/4032/authorized_users
-Accept: application/json
-Content-Type: application/json
-
-{
-  "user_id": 6231
-}

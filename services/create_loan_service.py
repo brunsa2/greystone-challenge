@@ -1,7 +1,7 @@
 """Service for creating a loan"""
 from decimal import Decimal
 
-from models.loan import Loan
+from models import Loan
 from request_exception import RequestException
 
 
