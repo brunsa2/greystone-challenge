@@ -1,6 +1,5 @@
 """Service for creating a loan"""
 from decimal import Decimal
-
 from models import Loan
 from request_exception import RequestException
 
@@ -22,13 +21,17 @@ class CreateLoanService:
             term_months: int,
             interest_rate: Decimal):
         """Create a user in the repository
-        @:param user_repository: Repository to create user in
-        @:param username: Username of new user
-        @:returns: user ID of newly-created user
+        @:param loan_repository: Repository to create loan in
+        @:param user_repository: Repository to check user from
+        @:param user_id: user ID loan belongs to
+        @:param amount: Amount of new loan
+        @:param term_months: Term in months of new loan
+        @:param interest_rate: Interest rate of new loan
+        @:returns: loan ID of newly-created loan
         @:raises: RequestException if request is invalid
         """
         if not user_repository.exists(user_id):
-            raise RequestException("user #{} doesn't exist".format(user_id))
+            raise RequestException("user {} doesn't exist".format(user_id))
 
         if not (0 <= amount <= MAX_LOAN_AMOUNT):
             raise RequestException("Invalid amount {}".format(amount))

@@ -21,7 +21,7 @@ class TestCreateAmortizationScheduleService(unittest.TestCase):
         # Examples checked against https://www.calculator.net/amortization-calculator.html
         examples = [
             Example(
-                name="$1000.00 12 months @ 10.00%",
+                name='$1000.00 12 months @ 10.00%',
                 amount=Decimal('1000.00'),
                 term_months=12,
                 interest_rate=Decimal('0.1'),
@@ -55,7 +55,7 @@ class TestCreateAmortizationScheduleService(unittest.TestCase):
                     }
                 }),
             Example(
-                name="$1000.10 12 months @ 10.00%",
+                name='$1000.10 12 months @ 10.00%',
                 amount=Decimal('1000.10'),
                 term_months=12,
                 interest_rate=Decimal('0.1'),
@@ -89,7 +89,7 @@ class TestCreateAmortizationScheduleService(unittest.TestCase):
                     }
                 }),
             Example(
-                name="$1000.20 12 months @ 10.00%",
+                name='$1000.20 12 months @ 10.00%',
                 amount=Decimal('1000.20'),
                 term_months=12,
                 interest_rate=Decimal('0.1'),
@@ -123,7 +123,7 @@ class TestCreateAmortizationScheduleService(unittest.TestCase):
                     }
                 }),
             Example(
-                name="$1000.00 12 months @ 0.00%",
+                name='$1000.00 12 months @ 0.00%',
                 amount=Decimal('1000.00'),
                 term_months=12,
                 interest_rate=Decimal('0.0'),
@@ -157,7 +157,7 @@ class TestCreateAmortizationScheduleService(unittest.TestCase):
                     }
                 }),
             Example(
-                name="$1000.00 1 months @ 10.00%",
+                name='$1000.00 1 months @ 10.00%',
                 amount=Decimal('1000.00'),
                 term_months=1,
                 interest_rate=Decimal('0.1'),
@@ -182,7 +182,7 @@ class TestCreateAmortizationScheduleService(unittest.TestCase):
                     }
                 }),
             Example(
-                name="$1000.00 12 months @ 3000.00% negative amortization/balloon payment",
+                name='$1000.00 12 months @ 3000.00% negative amortization/balloon payment',
                 amount=Decimal('1000.00'),
                 term_months=12,
                 interest_rate=Decimal('30.00'),

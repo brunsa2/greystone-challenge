@@ -1,5 +1,5 @@
 """Service for creating a user"""
-from models.user import User
+from models import User
 from request_exception import RequestException
 
 
