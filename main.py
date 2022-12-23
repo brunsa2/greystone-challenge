@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from repositories.user_repository import UserRepository
 from repositories.loan_repository import LoanRepository
 from request_exception import RequestException
-from services import CreateAmortizationScheduleService, CreateUserService, CreateLoanService
+from services import CreateAmortizationScheduleService, CreateUserService, CreateLoanService, GetUserLoansService
 from decimal import Decimal, InvalidOperation
 
 app = FastAPI()
@@ -44,12 +44,16 @@ async def create_user(user: UserRequest):
 @app.get("/user/{user_id}/loans")
 async def get_user_loans(user_id: int):
     """Handles getting all loans belonging to user"""
-    return {
-        "amount": "0.00",
-        "term_months": 0,
-        "interest_rate": "0.0",
+    loans = GetUserLoansService.get_user_loans(
+        loan_repository,
+        user_repository,
+        user_id)
+    return [{
+        "amount": str(loan.amount),
+        "term_months": loan.term_months,
+        "interest_rate": str(loan.interest_rate),
         "authorized_users": []
-    }
+    } for loan in loans]
 
 
 @app.post("/user/{user_id}/loans")
