@@ -4,16 +4,16 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
-from repositories.user_repository import UserRepository
-from repositories.loan_repository import LoanRepository
+from repositories import AuthorizedUserRepository, LoanRepository, UserRepository
 from request_exception import RequestException
-from services import CreateAmortizationScheduleService, CreateUserService, CreateLoanService, GetUserLoansService
+from services import AddAuthorizedUserService, CreateAmortizationScheduleService, CreateUserService, CreateLoanService, GetUserLoansService
 from decimal import Decimal, InvalidOperation
 
 app = FastAPI()
 
 user_repository = UserRepository()
 loan_repository = LoanRepository()
+authorized_user_repository = AuthorizedUserRepository()
 
 
 class UserRequest(BaseModel):
@@ -27,6 +27,10 @@ class LoanRequest(BaseModel):
     term_months: int
     interest_rate: str
 
+
+class AuthorizedUserRequest(BaseModel):
+    """Authorized user request object"""
+    user_id: int
 
 @app.post("/users")
 async def create_user(user: UserRequest):
@@ -142,8 +146,14 @@ async def get_loan_month(user_id: int, loan_id: int, month: int):
 
 
 @app.post("/user/{user_id}/loan/{loan_id}/authorized_users")
-async def add_loan_authorized_user(user_id: int, loan_id: int):
-    """Handles adding authorized (shared) user to a given loan"""
+async def add_loan_authorized_user(user_id: int, loan_id: int, authorized_user: AuthorizedUserRequest):
+    """Handles adding authorized (shared) user to a given loan
+
+    @:param user_id: User ID of loan (currently not checked; only for URL)
+    @:param loan_id: Loan ID to add authorized user to
+    @:param authorized_user: Authorized user request to add
+    """
+    AddAuthorizedUserService.add_authorized_user(authorized_user_repository, user_repository, loan_repository, authorized_user_id=authorized_user.user_id, loan_id=loan_id)
     return {}
 
 
