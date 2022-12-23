@@ -1,4 +1,4 @@
-'''Service for generating amortization schedules'''
+"""Service for generating amortization schedules"""
 import decimal
 from decimal import Decimal
 
@@ -19,6 +19,7 @@ class CreateAmortizationScheduleService:
         @:returns: Array of month schedules containing the remaining balance,
         monthly payment, principal and interest paid in the month, and running
         totals of the principal, interest, and total paid so far.
+        @:raises: Exception if any loan parameter is invalid
         """
         if amount <= 0:
             raise Exception('amount must be positive')

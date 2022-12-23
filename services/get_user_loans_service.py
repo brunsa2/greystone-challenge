@@ -15,7 +15,7 @@ class GetUserLoansService:
         @:raises: RequestException if request is invalid
         """
         if not user_repository.exists(user_id):
-            raise RequestException("missing user {}".format(user_id))
+            raise RequestException('missing user {}'.format(user_id))
         loans = loan_repository.read_loans_for_user_id(user_id)
 
         authorized_loan_ids = authorized_user_repository.read_loan_ids_by_user_id(user_id)

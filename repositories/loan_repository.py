@@ -1,5 +1,5 @@
 """Memory-based loan repository"""
-from models.loan import Loan
+from models import Loan
 
 
 class LoanRepository:
