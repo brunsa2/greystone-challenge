@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from repositories.user_repository import UserRepository
 from repositories.loan_repository import LoanRepository
 from request_exception import RequestException
-from services import CreateUserService, CreateLoanService, GetUserLoansService
+from services import CreateAmortizationScheduleService, CreateUserService, CreateLoanService, GetUserLoansService
 from decimal import Decimal, InvalidOperation
 
 app = FastAPI()
@@ -51,7 +51,8 @@ async def get_user_loans(user_id: int):
     return [{
         "amount": str(loan.amount),
         "term_months": loan.term_months,
-        "interest_rate": str(loan.interest_rate)
+        "interest_rate": str(loan.interest_rate),
+        "authorized_users": []
     } for loan in loans]
 
 
@@ -87,23 +88,56 @@ async def create_loan(user_id: int, loan: LoanRequest):
 
 @app.get("/user/{user_id}/loan/{loan_id}/schedule")
 async def get_loan_schedule(user_id: int, loan_id: int):
-    """Handles getting loan schedule for given loan"""
+    """Handles getting loan schedule for given loan
+
+    @:param user_id: User ID of loan (currently not checked; only for URL)
+    @:param loan_id: Loan ID of loan
+    @:returns: JSON array of monthly balance schedules
+    """
+    loan = loan_repository.read(loan_id)
+    if loan is None:
+        raise RequestException('missing loan {}'.format(loan_id))
+
+    schedule = CreateAmortizationScheduleService.generate_amortization_schedule(
+        amount=loan.amount,
+        term_months=loan.term_months,
+        interest_rate=loan.interest_rate)
+
     return [
         {
-            "month_number": 0,
-            "balance": "0.00",
-            "payment": "0.00"
+            'month': month,
+            'remaining_balance': str(month_balances['balance']),
+            'monthly_payment': str(month_balances['payment'])
         }
+        for month, month_balances in enumerate(schedule)
     ]
 
 
-@app.get("/user/{user_id}/loan/{loan_id}/month/{month_id}")
-async def get_loan_month(user_id: int, loan_id: int, month_id: int):
-    """Handles getting loan balance and payment information for given month"""
+@app.get("/user/{user_id}/loan/{loan_id}/month/{month}")
+async def get_loan_month(user_id: int, loan_id: int, month: int):
+    """Handles getting loan balance and payment information for given month
+
+    @:param user_id: User ID of loan (currently not checked; only for URL)
+    @:param loan_id: Loan ID of loan
+    @:param month: Month number to retrieve balances for (0 is beginning of loan)
+    @:returns: JSON summary of loan balances at given month
+    """
+    loan = loan_repository.read(loan_id)
+    if loan is None:
+        raise RequestException('missing loan {}'.format(loan_id))
+
+    if month < 0 or month > loan.term_months:
+        raise RequestException('invalid month {}'.format(month))
+
+    schedule = CreateAmortizationScheduleService.generate_amortization_schedule(
+        amount=loan.amount,
+        term_months=loan.term_months,
+        interest_rate=loan.interest_rate)
+
     return {
-        "principal_balance": "0.00",
-        "principal_paid": "0.00",
-        "interest_paid": "0.00"
+        "principal_balance": str(schedule[month]['balance']),
+        "principal_paid": str(schedule[month]['total_principal_paid']),
+        "interest_paid": str(schedule[month]['total_interest_paid'])
     }
 
 

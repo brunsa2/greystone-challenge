@@ -191,14 +191,44 @@ Content-Type: application/json
   "interest_rate": "0.40"
 }
 
-###
+### Schedule happy path
 
-GET http://127.0.0.1:8000/user/5716/loan/4032/schedule
+GET http://127.0.0.1:8000/user/1/loan/1/schedule
 Accept: application/json
 
-###
+### Missing loan
 
-GET http://127.0.0.1:8000/user/5716/loan/4032/month/27
+GET http://127.0.0.1:8000/user/1/loan/5716/schedule
+Accept: application/json
+
+### Month 0
+
+GET http://127.0.0.1:8000/user/1/loan/1/month/0
+Accept: application/json
+
+### Month 27
+
+GET http://127.0.0.1:8000/user/1/loan/1/month/27
+Accept: application/json
+
+### Month 120
+
+GET http://127.0.0.1:8000/user/1/loan/1/month/120
+Accept: application/json
+
+### Missing loan
+
+GET http://127.0.0.1:8000/user/1/loan/5716/month/0
+Accept: application/json
+
+### Negative month
+
+GET http://127.0.0.1:8000/user/1/loan/1/month/-1
+Accept: application/json
+
+### Non-existent month
+
+GET http://127.0.0.1:8000/user/1/loan/1/month/200
 Accept: application/json
 
 ###
