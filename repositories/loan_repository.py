@@ -34,4 +34,4 @@ class LoanRepository:
         @:param user_id: ID of user to read loans from
         @:returns: List of loan objects
         """
-        return self.loans_by_user_id[user_id]
+        return self.loans_by_user_id.setdefault(user_id, [])

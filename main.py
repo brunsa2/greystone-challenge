@@ -6,7 +6,11 @@ from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
 from repositories import AuthorizedUserRepository, LoanRepository, UserRepository
 from request_exception import RequestException
-from services import AddAuthorizedUserService, CreateAmortizationScheduleService, CreateUserService, CreateLoanService, GetUserLoansService
+from services import AddAuthorizedUserService,\
+    CreateAmortizationScheduleService,\
+    CreateUserService,\
+    CreateLoanService,\
+    GetUserLoansService
 from decimal import Decimal, InvalidOperation
 
 app = FastAPI()
@@ -32,6 +36,7 @@ class AuthorizedUserRequest(BaseModel):
     """Authorized user request object"""
     user_id: int
 
+
 @app.post("/users")
 async def create_user(user: UserRequest):
     """Handles creating new user
@@ -51,12 +56,13 @@ async def get_user_loans(user_id: int):
     loans = GetUserLoansService.get_user_loans(
         loan_repository,
         user_repository,
+        authorized_user_repository,
         user_id)
     return [{
         "amount": str(loan.amount),
         "term_months": loan.term_months,
         "interest_rate": str(loan.interest_rate),
-        "authorized_users": []
+        "authorized_users": loan.authorized_user_ids
     } for loan in loans]
 
 
@@ -153,7 +159,12 @@ async def add_loan_authorized_user(user_id: int, loan_id: int, authorized_user: 
     @:param loan_id: Loan ID to add authorized user to
     @:param authorized_user: Authorized user request to add
     """
-    AddAuthorizedUserService.add_authorized_user(authorized_user_repository, user_repository, loan_repository, authorized_user_id=authorized_user.user_id, loan_id=loan_id)
+    AddAuthorizedUserService.add_authorized_user(
+        authorized_user_repository,
+        user_repository,
+        loan_repository,
+        authorized_user_id=authorized_user.user_id,
+        loan_id=loan_id)
     return {}
 
 

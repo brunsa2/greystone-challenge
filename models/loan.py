@@ -10,3 +10,4 @@ class Loan(BaseModel):
     amount: Decimal
     term_months: int
     interest_rate: Decimal
+    authorized_user_ids: list[int]

@@ -42,6 +42,7 @@ class CreateLoanService:
             user_id=user_id,
             amount=amount,
             term_months=term_months,
-            interest_rate=interest_rate)
+            interest_rate=interest_rate,
+            authorized_user_ids=[])
         loan_repository.create(loan)
         return loan.loan_id
