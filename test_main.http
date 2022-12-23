@@ -28,11 +28,6 @@ Content-Type: application/json
   "username": ""
 }
 
-###
-
-GET http://127.0.0.1:8000/user/5716/loans
-Accept: application/json
-
 ### Happy path loan creation
 
 POST http://127.0.0.1:8000/user/1/loans
@@ -277,3 +272,30 @@ Content-Type: application/json
 {
   "user_id": 4032
 }
+
+### One loan
+
+GET http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+
+### Second loan creation for testing get
+
+POST http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+Content-Type: application/json
+
+{
+  "amount": "20000.00",
+  "term_months": 60,
+  "interest_rate": "0.28"
+}
+
+### Two loans
+
+GET http://127.0.0.1:8000/user/1/loans
+Accept: application/json
+
+### Bad user ID
+
+GET http://127.0.0.1:8000/user/5716/loans
+Accept: application/json
