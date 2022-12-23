@@ -295,6 +295,11 @@ Content-Type: application/json
 GET http://127.0.0.1:8000/user/1/loans
 Accept: application/json
 
+### Authorized loans
+
+GET http://127.0.0.1:8000/user/2/loans
+Accept: application/json
+
 ### Bad user ID
 
 GET http://127.0.0.1:8000/user/5716/loans
